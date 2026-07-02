@@ -1,0 +1,1034 @@
+<!doctype html>
+<!--
+  ============================================================================
+  COMPRAR × ALUGAR — Simulador de Análise Econômica para Possuir um Carro
+  © 2026 Silas Marinho de Queiroz Jr.. Todos os direitos reservados.
+  Consultoria Financeira Comportamental para Pessoas e Empresas
+  WhatsApp: +55 21 99600-5404  |  comprarxalugar@gmail.com
+  Uso e reprodução não autorizados são vedados.
+  ============================================================================
+-->
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COMPRAR × ALUGAR — Simulador de Análise Econômica para Possuir um Carro</title>
+<meta name="author" content="Silas Marinho de Queiroz Jr.">
+<meta name="description" content="Simulador de análise econômica: comparar comprar à vista, financiar ou alugar um carro a valor presente. Por Silas Marinho de Queiroz Jr..">
+<meta name="copyright" content="© 2026 Silas Marinho de Queiroz Jr.. Todos os direitos reservados.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Paleta fintech (estilo GoPay / online banking) — verde-esmeralda sobre claro */
+  --ink:#0b1f1a;            /* verde-quase-preto p/ textos e héroi */
+  --hero:#0e2a22;          /* fundo escuro do topo */
+  --hero2:#123a2f;
+  --paper:#eef3f0;         /* fundo geral levemente esverdeado */
+  --card:#ffffff;
+  --line:#e2ebe6; --line2:#eef4f1;
+  --muted:#5f7169; --muted2:#93a49c;
+  --brand:#12b76a;         /* verde primário vibrante */
+  --brand-d:#0e9a58;
+  --brand-soft:#d6f5e6;    /* verde-menta suave */
+  --mint:#a6f0cd;
+  /* cores por cenário */
+  --avista:#12b76a; --avista-bg:#dcf6ea;
+  --financiado:#f79009; --financiado-bg:#fdf0dc;
+  --aluguel:#2e90fa; --aluguel-bg:#e2f0ff;
+  --win:#12b76a;
+  --display:"Poppins",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --body:"DM Sans",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:"DM Mono",ui-monospace,"SF Mono","Cascadia Code",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.5;font-feature-settings:"tnum" 1;}
+.wrap{max-width:1280px;margin:0 auto;padding:0 20px 90px}
+
+/* ===== HERO ===== */
+.hero{background:radial-gradient(120% 140% at 85% 0%, var(--hero2) 0%, var(--hero) 55%, #08201a 100%);
+  color:#eafff5;border-radius:0 0 30px 30px;margin:0 -20px 30px;padding:0;overflow:hidden;position:relative}
+.hero-inner{max-width:1280px;margin:0 auto;padding:34px 40px 38px;display:grid;
+  grid-template-columns:1fr auto;gap:30px;align-items:center}
+.hero-brand{display:flex;align-items:center;gap:10px;margin-bottom:20px;opacity:.85}
+.hero-logo{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--brand),#0bd47f);
+  display:grid;place-items:center;box-shadow:0 6px 18px rgba(18,183,106,.4)}
+.hero-logo svg{width:22px;height:22px}
+.hero-logo-txt{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.02em;color:#eafff5}
+.hero-logo-txt span{color:var(--mint)}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--body);font-size:12px;font-weight:600;
+  letter-spacing:.04em;color:var(--mint);background:rgba(18,183,106,.14);border:1px solid rgba(166,240,205,.25);
+  padding:6px 13px;border-radius:30px;margin:0 0 16px}
+.hero h1{font-family:var(--display);font-weight:700;letter-spacing:-.02em;line-height:1.06;
+  font-size:clamp(28px,3.7vw,46px);margin:0 0 8px;color:#fff}
+.hero h1 em{font-style:normal;color:var(--mint)}
+.hero-sub{font-family:var(--display);font-weight:500;font-size:clamp(14px,1.6vw,17px);color:#bfe8d5;margin:0 0 16px;max-width:34ch}
+.lede{max-width:56ch;color:#a9cdbd;font-size:14.5px;margin:0;line-height:1.6}
+.lede code{font-family:var(--mono);font-size:.88em;background:rgba(166,240,205,.16);color:var(--mint);padding:1px 7px;border-radius:5px}
+.hero-photo{position:relative;align-self:center}
+.hero-photo img{display:block;width:300px;height:auto;border-radius:18px;
+  box-shadow:0 10px 40px rgba(0,0,0,.4);filter:saturate(1.02)}
+.hero-photo .ring{position:absolute;inset:-12px;border:1px solid rgba(166,240,205,.22);
+  border-radius:26px;pointer-events:none}
+@media(max-width:820px){
+  .hero-inner{grid-template-columns:1fr;padding:26px 22px 30px;gap:0}
+  .hero-text{order:1}
+  .hero-photo{order:2;justify-self:center;margin-top:24px}
+  .hero-photo img{width:min(320px,80vw);border-radius:18px}
+  .hero-photo .ring{display:none}
+}
+h1{font-family:var(--display)}
+
+/* TABS */
+.tabs-bar{display:inline-flex;gap:4px;background:#fff;border:1px solid var(--line);border-radius:14px;
+  padding:5px;margin-bottom:26px;box-shadow:0 4px 16px rgba(11,31,26,.05)}
+.tab-btn{font-family:var(--display);font-size:13.5px;font-weight:600;border:none;background:transparent;
+  padding:9px 20px;cursor:pointer;color:var(--muted);border-radius:10px;letter-spacing:.01em;transition:all .18s}
+.tab-btn.active{color:#fff;background:var(--brand);box-shadow:0 4px 12px rgba(18,183,106,.32)}
+.tab-btn:hover:not(.active){color:var(--ink);background:var(--brand-soft)}
+.tab-panel{display:none}.tab-panel.active{display:block}
+
+/* layout */
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:30px;align-items:start}
+@media(max-width:960px){.grid{grid-template-columns:1fr;gap:22px}}
+
+/* panels */
+.panel{background:var(--card);border:1px solid var(--line);border-radius:20px;margin-bottom:16px;overflow:hidden;
+  box-shadow:0 6px 22px rgba(11,31,26,.05)}
+.panel>h2{font-family:var(--display);font-size:14px;font-weight:600;margin:0;padding:15px 20px;
+  border-bottom:1px solid var(--line2);display:flex;align-items:center;gap:11px;background:#fff}
+.panel>h2 .n{font-family:var(--display);font-size:12px;color:#fff;background:var(--brand);width:24px;height:24px;
+  border-radius:8px;display:grid;place-items:center;font-weight:700;box-shadow:0 3px 8px rgba(18,183,106,.3)}
+.body{padding:17px 20px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px}
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.field:last-child{margin-bottom:0}
+label{font-size:12.5px;color:#45433d;font-weight:500}
+label .hint{color:var(--muted2);font-weight:400}
+.inp{position:relative;display:flex;align-items:center}
+.inp .pre,.inp .suf{position:absolute;font-family:var(--mono);font-size:12px;color:var(--muted2);pointer-events:none}
+.inp .pre{left:11px}.inp .suf{right:11px}
+input[type=number]{width:100%;font-family:var(--mono);font-size:14px;color:var(--ink);
+  border:1.5px solid var(--line);border-radius:11px;padding:10px 12px;background:#f7faf8;-moz-appearance:textfield;transition:all .15s}
+input[type=number]:focus{outline:none;border-color:var(--brand);background:#fff;box-shadow:0 0 0 3px rgba(18,183,106,.14)}
+input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+.inp.haspre input{padding-left:32px}.inp.hassuf input{padding-right:48px}
+
+/* seg toggles */
+.seg{display:inline-flex;border:1.5px solid var(--line);border-radius:11px;overflow:hidden;background:#f2f7f4;padding:2px;gap:2px}
+.seg button{font-family:var(--body);font-size:12.5px;font-weight:600;border:0;background:transparent;
+  padding:7px 14px;cursor:pointer;color:var(--muted);border-radius:8px;transition:all .15s}
+.seg button.on{background:var(--brand);color:#fff;box-shadow:0 2px 6px rgba(18,183,106,.3)}
+.seg.small button{padding:6px 11px;font-size:12px}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-size:12.5px;border:1px solid var(--line);border-radius:20px;padding:6px 12px;cursor:pointer;
+  user-select:none;background:#f6f3ec;color:var(--muted);display:inline-flex;align-items:center;gap:6px}
+.chip.on{background:var(--aluguel-bg);border-color:var(--aluguel);color:var(--aluguel);font-weight:500}
+.chip .dot{width:7px;height:7px;border-radius:50%;background:var(--muted2)}
+.chip.on .dot{background:var(--aluguel)}
+
+.wcalc{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:2px}
+.wcalc b{color:var(--avista)}
+.note{font-size:12px;color:var(--muted);margin:8px 0 0;line-height:1.45}
+.hidden{display:none !important}
+.entrada-calc{font-family:var(--mono);font-size:12px;color:var(--muted2);margin-top:4px}
+.entrada-calc b{color:var(--ink)}
+
+/* results */
+.results{position:sticky;top:16px}
+@media(max-width:960px){.results{position:static}}
+.verdict{background:radial-gradient(130% 130% at 90% 0%,var(--hero2),var(--hero));color:#eafff5;border-radius:20px;
+  padding:20px 22px;margin-bottom:16px;box-shadow:0 10px 30px rgba(11,31,26,.18);position:relative;overflow:hidden}
+.verdict::after{content:"";position:absolute;right:-40px;top:-40px;width:150px;height:150px;
+  background:radial-gradient(circle,rgba(18,183,106,.35),transparent 70%);border-radius:50%}
+.verdict .k{font-family:var(--body);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mint);margin:0 0 8px;font-weight:600;position:relative}
+.verdict .win{font-family:var(--display);font-size:27px;font-weight:700;letter-spacing:-.01em;line-height:1.1;margin:0 0 6px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;position:relative}
+.verdict .win .pill{font-family:var(--body);font-size:10.5px;font-weight:700;background:var(--brand);color:#fff;padding:4px 9px;border-radius:20px;letter-spacing:.04em}
+.verdict .sub{font-size:13px;color:#bfe8d5;margin:0;position:relative}
+.verdict .sub b{color:#fff;font-family:var(--mono)}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-bottom:16px}
+@media(max-width:560px){.cards{grid-template-columns:1fr}}
+.sc{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px;position:relative;border-top:3px solid var(--c);box-shadow:0 6px 20px rgba(11,31,26,.05)}
+.sc.avista{--c:var(--avista)}.sc.financiado{--c:var(--financiado)}.sc.aluguel{--c:var(--aluguel)}
+.sc .tag{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--c);font-weight:600;margin:0 0 8px}
+.sc .vp{font-family:var(--mono);font-size:20px;font-weight:600;letter-spacing:-.02em;margin:0;line-height:1}
+.sc .vplabel{font-size:10.5px;color:var(--muted2);margin:3px 0 10px}
+.sc .meta{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);border-top:1px solid var(--line2);padding-top:7px;margin-top:0}
+.sc .meta b{font-family:var(--mono);color:#3c3a34;font-weight:500}
+.sc .badge{position:absolute;top:-11px;right:10px;font-family:var(--body);font-size:9.5px;font-weight:700;
+  background:var(--win);color:#fff;padding:4px 9px;border-radius:20px;letter-spacing:.03em;box-shadow:0 3px 8px rgba(18,183,106,.35)}
+.sc.warn{opacity:.62}
+.sc .flag{font-size:10.5px;color:var(--financiado);margin-top:8px;font-weight:500}
+.block{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:17px 20px;margin-bottom:16px;box-shadow:0 6px 22px rgba(11,31,26,.05)}
+.block h3{font-family:var(--display);font-size:13px;font-weight:600;margin:0 0 13px;letter-spacing:.01em;
+  display:flex;align-items:center;justify-content:space-between}
+.block h3 .u{font-family:var(--mono);font-weight:400;font-size:11px;color:var(--muted2);text-transform:none;letter-spacing:0}
+.bars{display:flex;flex-direction:column;gap:11px}
+.bar .top{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px}
+.bar .top .nm{font-weight:500}.bar .top .vl{font-family:var(--mono);font-weight:500}
+.bar .track{height:22px;background:#f1eee6;border-radius:6px;overflow:hidden}
+.bar .fill{height:100%;border-radius:6px;transition:width .55s cubic-bezier(.22,1,.36,1)}
+.bar.avista .fill{background:var(--avista)}.bar.avista .nm{color:var(--avista)}
+.bar.financiado .fill{background:var(--financiado)}.bar.financiado .nm{color:var(--financiado)}
+.bar.aluguel .fill{background:var(--aluguel)}.bar.aluguel .nm{color:var(--aluguel)}
+.chartwrap{width:100%;overflow:hidden}
+svg.line{width:100%;height:auto;display:block}
+.legend{display:flex;gap:16px;margin-top:8px;font-size:11.5px;color:var(--muted);flex-wrap:wrap}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:14px;height:3px;border-radius:2px;display:inline-block}
+
+/* ledger / tables shared */
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th,td{text-align:right;padding:7px 6px;border-bottom:1px solid var(--line2)}
+th:first-child,td:first-child{text-align:left}
+thead th{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted2);font-weight:600;border-bottom:1.5px solid var(--line)}
+tbody td:not(:first-child){font-family:var(--mono);color:#3c3a34}
+tbody tr.credit td:not(:first-child){color:var(--avista)}
+tbody tr.total td{font-weight:700;border-top:2px solid var(--brand);border-bottom:none;padding-top:9px;color:var(--ink)}
+tbody tr.total td:not(:first-child){font-family:var(--mono)}
+tbody tr.subtotal td{font-weight:600;border-top:1px dashed var(--line);background:#f5faf7}
+tbody tr.subtotal td:not(:first-child){font-family:var(--mono)}
+tbody tr.grp-head td{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--muted);background:#f2f7f4;border-bottom:none;padding:10px 6px 4px}
+tbody tr.zero-row{opacity:.45}
+.cav{color:var(--avista)}.cfi{color:var(--financiado)}.cal{color:var(--aluguel)}.dim{color:var(--muted2)}
+.info{display:flex;flex-wrap:wrap;gap:14px 26px;font-size:12px;color:var(--muted);margin-top:2px}
+.info div b{display:block;font-family:var(--mono);font-size:14px;color:var(--financiado);font-weight:600}
+
+/* cash flow tab */
+.cf-controls{display:flex;align-items:center;gap:14px;margin-bottom:16px;flex-wrap:wrap}
+.cf-controls label{font-size:12.5px;font-weight:500;color:#45433d}
+.cf-scenario-tabs{display:flex;gap:6px}
+.cf-scenario-tabs button{font-family:var(--mono);font-size:11px;font-weight:600;border:1.5px solid var(--line);
+  border-radius:8px;padding:6px 14px;cursor:pointer;background:#f6f3ec;color:var(--muted);letter-spacing:.03em}
+.cf-scenario-tabs button.on-av{background:var(--avista-bg);border-color:var(--avista);color:var(--avista)}
+.cf-scenario-tabs button.on-fi{background:var(--financiado-bg);border-color:var(--financiado);color:var(--financiado)}
+.cf-scenario-tabs button.on-al{background:var(--aluguel-bg);border-color:var(--aluguel);color:var(--aluguel)}
+.cf-wrap{overflow-x:auto}
+.cf-tbl{min-width:680px}
+.cf-tbl th{background:#f8f6f0}
+.cf-tbl td.month-col{color:var(--muted2);font-family:var(--mono);font-size:11px}
+.cf-tbl td.zero{color:var(--muted2);font-size:11px}
+.cf-tbl tr.cf-total-row td{font-weight:700;border-top:2px solid var(--brand);font-family:var(--mono)}
+.cf-tbl tr.cf-annual-sub td{background:#f5faf7;font-size:11px;color:var(--muted)}
+.cf-tbl td.neg{color:var(--brand-d)}
+.cf-note{font-size:11.5px;color:var(--muted);margin-top:10px;line-height:1.5}
+.cf-summary-bar{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.cf-kv{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 18px;flex:1;min-width:140px;box-shadow:0 6px 20px rgba(11,31,26,.05)}
+.cf-kv .k{font-size:10.5px;color:var(--muted2);margin:0 0 5px;font-family:var(--body);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.cf-kv .v{font-family:var(--mono);font-size:18px;font-weight:600;margin:0}
+.cf-kv.hi{background:linear-gradient(135deg,var(--brand),#0bd47f);border:none}
+.cf-kv.hi .k{color:rgba(255,255,255,.85)}
+.cf-kv.hi .v{color:#fff}
+
+footer.assump{font-size:11.5px;color:var(--muted);line-height:1.55;margin-top:26px;padding-top:18px;border-top:1px solid var(--line)}
+footer.assump b{color:var(--ink)}
+
+/* ===== CONSULTORIA (topo) ===== */
+.consult{background:radial-gradient(120% 160% at 50% 0%,var(--hero2),var(--hero) 60%,#08201a);
+  color:#dcefe6;border-radius:22px;padding:34px 34px 30px;margin-bottom:24px;overflow:hidden;position:relative;
+  box-shadow:0 10px 30px rgba(11,31,26,.12)}
+.consult-cta{max-width:640px;margin:0 auto;text-align:center;display:flex;flex-direction:column;align-items:center}
+.consult-cta h3{font-family:var(--display);font-weight:700;font-size:clamp(19px,2.4vw,26px);line-height:1.18;margin:0 0 12px;color:#fff}
+.consult-cta h3 em{font-style:normal;color:var(--mint)}
+.consult-cta p{font-size:14px;color:#a9cdbd;margin:0 0 22px;line-height:1.6}
+.consult-btn{display:inline-flex;align-items:center;gap:9px;font-family:var(--display);font-weight:600;font-size:14px;
+  text-decoration:none;padding:13px 22px;border-radius:13px;background:linear-gradient(135deg,var(--brand),#0bd47f);
+  color:#fff;box-shadow:0 8px 22px rgba(18,183,106,.4);transition:transform .15s,box-shadow .15s}
+.consult-btn:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(18,183,106,.5)}
+.consult-btn svg{width:18px;height:18px}
+.consult-author{margin-top:26px;padding-top:22px;border-top:1px solid rgba(166,240,205,.16);width:100%;
+  display:flex;flex-direction:column;align-items:center;text-align:center}
+.consult-tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--mint);background:rgba(18,183,106,.16);padding:5px 12px;border-radius:20px;margin-bottom:12px}
+.consult-name{font-family:var(--display);font-weight:700;font-size:16px;color:#fff;margin:0 0 4px;white-space:nowrap}
+.consult-role{font-size:13px;color:#a9cdbd;margin:0;line-height:1.5}
+@media(max-width:820px){
+  .consult{padding:28px 22px 26px}
+  .consult-name{white-space:normal}
+}
+
+/* ===== CONTACT FOOTER ===== */
+.site-footer{background:radial-gradient(120% 160% at 15% 0%,var(--hero2),var(--hero) 60%,#08201a);
+  color:#dcefe6;border-radius:26px;margin:40px -20px 0;padding:40px;overflow:hidden;position:relative}
+.site-footer .sf-inner{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:1.3fr 1fr;gap:34px;align-items:center;position:relative}
+.sf-cta h3{font-family:var(--display);font-weight:700;font-size:clamp(20px,2.6vw,28px);line-height:1.18;margin:0 0 12px;color:#fff}
+.sf-cta h3 em{font-style:normal;color:var(--mint)}
+.sf-cta p{font-size:14px;color:#a9cdbd;margin:0 0 22px;max-width:44ch;line-height:1.6}
+.sf-btns{display:flex;flex-wrap:wrap;gap:12px}
+.sf-btn{display:inline-flex;align-items:center;gap:9px;font-family:var(--display);font-weight:600;font-size:14px;
+  text-decoration:none;padding:12px 20px;border-radius:13px;transition:transform .15s,box-shadow .15s}
+.sf-btn.wa{background:linear-gradient(135deg,var(--brand),#0bd47f);color:#fff;box-shadow:0 8px 22px rgba(18,183,106,.4)}
+.sf-btn.wa:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(18,183,106,.5)}
+.sf-btn.mail{background:rgba(255,255,255,.08);color:#eafff5;border:1px solid rgba(166,240,205,.25)}
+.sf-btn.mail:hover{background:rgba(255,255,255,.14)}
+.sf-btn svg{width:18px;height:18px}
+.sf-card{background:rgba(255,255,255,.05);border:1px solid rgba(166,240,205,.18);border-radius:20px;padding:24px}
+.sf-card .badge{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--mint);background:rgba(18,183,106,.16);padding:5px 12px;border-radius:20px;margin-bottom:14px}
+.sf-card .name{font-family:var(--display);font-weight:700;font-size:18px;color:#fff;margin:0 0 4px}
+.sf-card .role{font-size:13px;color:#a9cdbd;margin:0 0 16px;line-height:1.5}
+.sf-contacts{display:flex;flex-direction:column;gap:10px;font-size:13px}
+.sf-contacts a{color:#eafff5;text-decoration:none;display:flex;align-items:center;gap:9px}
+.sf-contacts a:hover{color:var(--mint)}
+.sf-contacts .ic{width:30px;height:30px;border-radius:9px;background:rgba(18,183,106,.16);display:grid;place-items:center;flex:none}
+.sf-contacts .ic svg{width:15px;height:15px}
+.sf-copy{text-align:center;font-size:11.5px;color:#7fa393;margin-top:30px;padding-top:20px;
+  border-top:1px solid rgba(166,240,205,.14);position:relative;line-height:1.6}
+.sf-copy b{color:#bfe8d5;font-weight:600}
+.sf-sub{color:#a9cdbd;font-weight:400;display:inline-block;margin:3px 0}
+.sf-disclaimer{max-width:680px;margin:0 auto 18px;text-align:center;font-size:11px;color:#6f9083;
+  line-height:1.6;padding-bottom:16px;border-bottom:1px solid rgba(166,240,205,.12)}
+.site-footer.copy-only{padding:24px 30px;margin-top:40px}
+.site-footer.copy-only .sf-copy{margin-top:0;padding-top:0;border-top:none;line-height:1.9}
+@media(max-width:820px){
+  .site-footer{padding:30px 24px;margin:30px -20px 0}
+  .site-footer .sf-inner{grid-template-columns:1fr;gap:26px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <div class="hero-brand">
+          <span class="hero-logo">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M3 13l2-5.5A2 2 0 0 1 6.9 6h10.2a2 2 0 0 1 1.9 1.5L21 13M5 13h14v4a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-1H8v1a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-4Z" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7.5" cy="15.5" r="1" fill="#fff"/><circle cx="16.5" cy="15.5" r="1" fill="#fff"/></svg>
+          </span>
+          <span class="hero-logo-txt">Simulador financeiro</span>
+        </div>
+        <h1>Comprar <em>×</em> Alugar</h1>
+        <p class="hero-sub">Simulador de Análise Econômica para Possuir um Carro</p>
+        <p class="lede">Cada alternativa — à vista, financiado ou aluguel — vira um fluxo de caixa mensal trazido a <b style="color:#eafff5">valor presente</b> pela sua taxa de custo de oportunidade. A opção de menor <code>VP</code> é a mais barata. Ajuste os campos e o resultado recalcula na hora.</p>
+      </div>
+      <div class="hero-photo">
+        <span class="ring"></span>
+        <img src="data:image/jpeg;base64,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" alt="Silas Marinho de Queiroz Jr.">
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== CONSULTORIA (topo) ===== -->
+  <section class="consult">
+    <div class="consult-cta">
+      <h3>Quer <em>mudar sua vida</em> por meio da Consultoria Financeira Comportamental?</h3>
+      <p>Seja na sua vida pessoal ou da sua empresa, tomar decisões financeiras com clareza é o primeiro passo para o sucesso — como a que esse simulador oferece. Entre em contato agora e transforme sua vida.</p>
+      <a class="consult-btn" href="https://wa.me/5521996005404" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.15-1.7-.84-2-.93-.26-.1-.45-.15-.64.14-.19.29-.74.93-.9 1.12-.17.19-.33.21-.62.07-.29-.15-1.22-.45-2.32-1.43-.86-.77-1.44-1.71-1.6-2-.17-.29-.02-.44.13-.59.13-.13.29-.33.43-.5.15-.16.19-.28.29-.47.1-.19.05-.36-.02-.5-.07-.15-.64-1.55-.88-2.12-.23-.56-.47-.48-.64-.49h-.55c-.19 0-.5.07-.76.36-.26.29-1 .98-1 2.38 0 1.4 1.02 2.76 1.17 2.95.14.19 2.02 3.08 4.9 4.32.68.29 1.22.47 1.64.6.69.22 1.31.19 1.81.11.55-.08 1.7-.69 1.94-1.36.24-.67.24-1.24.17-1.36-.07-.12-.26-.19-.55-.34ZM12.05 21.7h-.01a9.6 9.6 0 0 1-4.9-1.34l-.35-.21-3.65.96.97-3.56-.23-.37a9.58 9.58 0 0 1 14.88-11.9 9.53 9.53 0 0 1 2.8 6.78c0 5.29-4.3 9.6-9.6 9.6Zm8.17-17.76A11.42 11.42 0 0 0 12.05.6C5.8.6.72 5.68.72 11.93c0 2 .52 3.95 1.52 5.67L.63 23.4l5.94-1.56a11.36 11.36 0 0 0 5.48 1.4h.01c6.24 0 11.32-5.08 11.33-11.33a11.26 11.26 0 0 0-3.17-7.97Z"/></svg>
+        WhatsApp (21) 99600-5404
+      </a>
+      <div class="consult-author">
+        <span class="consult-tag">Autoria &amp; Consultoria</span>
+        <p class="consult-name">Silas Marinho de Queiroz Jr.</p>
+        <p class="consult-role">Consultoria Financeira Comportamental para Pessoas e Empresas</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TABS -->
+  <nav class="tabs-bar" role="tablist">
+    <button class="tab-btn active" data-tab="analise" role="tab">Análise Econômica</button>
+    <button class="tab-btn" data-tab="fluxo" role="tab">Fluxo de Caixa</button>
+  </nav>
+
+  <!-- ===== TAB 1: ANÁLISE ECONÔMICA ===== -->
+  <div class="tab-panel active" id="tab-analise">
+    <div class="grid">
+      <!-- INPUTS -->
+      <section aria-label="Premissas">
+
+        <div class="panel">
+          <h2><span class="n">1</span> Uso &amp; horizonte</h2>
+          <div class="body">
+            <div class="row">
+              <div class="field">
+                <label>Rodagem <span class="hint">(km / mês)</span></label>
+                <div class="inp hassuf"><input type="number" id="kmMes" value="1500" min="0" step="100"><span class="suf">km</span></div>
+              </div>
+              <div class="field">
+                <label>Tempo de posse / horizonte <span class="hint">(anos)</span></label>
+                <div class="inp hassuf"><input type="number" id="anos" value="5" min="0.5" step="0.5"><span class="suf">anos</span></div>
+              </div>
+            </div>
+            <p class="note">O horizonte define a duração da análise para <b>todos</b> os cenários. Se o financiamento terminar antes, as parcelas cessam e ficam só os custos de posse (IPVA, seguro, manutenção).</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2><span class="n">2</span> Custo de oportunidade <span style="font-weight:400;color:var(--muted2);font-size:11px;font-family:var(--mono)">taxa de desconto</span></h2>
+          <div class="body">
+            <div class="row">
+              <div class="field">
+                <label>Rendimento bruto <span class="hint">(% a.m.)</span></label>
+                <div class="inp hassuf"><input type="number" id="Y" value="1.0" min="0" step="0.05"><span class="suf">% a.m.</span></div>
+              </div>
+              <div class="field">
+                <label>IR sobre o rendimento <span class="hint">(%)</span></label>
+                <div class="inp hassuf"><input type="number" id="IR" value="15" min="0" max="100" step="0.5"><span class="suf">%</span></div>
+              </div>
+            </div>
+            <div class="field">
+              <label>Você tem o valor para comprar à vista hoje?</label>
+              <div class="seg" id="temDinheiro">
+                <button data-v="sim" class="on">Tenho</button>
+                <button data-v="nao">Não tenho</button>
+              </div>
+            </div>
+            <p class="wcalc">Taxa de desconto líquida: <b id="wOut">0,85% a.m.</b> <span class="dim">(≈ <span id="waOut">10,7%</span> a.a.)</span></p>
+            <p class="note" id="temNote"></p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2><span class="n">3</span> Veículo &amp; custos de posse <span style="font-weight:400;color:var(--muted2);font-size:11px;font-family:var(--mono)">cenários de compra</span></h2>
+          <div class="body">
+            <div class="row">
+              <div class="field">
+                <label>Preço do carro</label>
+                <div class="inp haspre"><span class="pre">R$</span><input type="number" id="preco" value="120000" min="0" step="1000"></div>
+              </div>
+              <div class="field">
+                <label>Desvalorização <span class="hint">(% a.a.)</span></label>
+                <div class="inp hassuf"><input type="number" id="desval" value="10" min="0" max="100" step="0.5"><span class="suf">% a.a.</span></div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label>Revisão a cada</label>
+                <div class="inp hassuf"><input type="number" id="manutKm" value="10000" min="1000" step="1000"><span class="suf">km</span></div>
+              </div>
+              <div class="field">
+                <label>Custo por revisão</label>
+                <div class="inp haspre"><span class="pre">R$</span><input type="number" id="manutCusto" value="800" min="0" step="50"></div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label>Pneus a cada</label>
+                <div class="inp hassuf"><input type="number" id="pneuKm" value="60000" min="1000" step="5000"><span class="suf">km</span></div>
+              </div>
+              <div class="field">
+                <label>Jogo de pneus</label>
+                <div class="inp haspre"><span class="pre">R$</span><input type="number" id="pneuCusto" value="2000" min="0" step="100"></div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label>IPVA <span class="hint">(% valor venal, a.a.)</span></label>
+                <div class="inp hassuf"><input type="number" id="ipva" value="4" min="0" max="10" step="0.25"><span class="suf">%</span></div>
+              </div>
+              <div class="field">
+                <label>Seguro anual</label>
+                <div class="seg small" id="seguroModo" style="margin-bottom:6px">
+                  <button data-v="pct" class="on">% do valor</button>
+                  <button data-v="fixo">R$ fixo</button>
+                </div>
+                <div class="inp hassuf" id="segPctWrap"><input type="number" id="seguroPct" value="4" min="0" step="0.25"><span class="suf">% a.a.</span></div>
+                <div class="inp haspre hidden" id="segFixWrap"><span class="pre">R$</span><input type="number" id="seguroFixo" value="4000" min="0" step="100"></div>
+              </div>
+            </div>
+            <p class="note">IPVA e seguro em % incidem sobre o valor <b>já depreciado</b> em cada ano de posse.</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2><span class="n">4</span> Financiamento <span style="font-weight:400;color:var(--muted2);font-size:11px;font-family:var(--mono)">Tabela Price</span></h2>
+          <div class="body">
+            <div class="field">
+              <label>Entrada</label>
+              <div class="seg small" id="entradaModo" style="margin-bottom:8px">
+                <button data-v="reais" class="on">R$ valor fixo</button>
+                <button data-v="pct">% do preço</button>
+              </div>
+              <div class="inp haspre" id="entradaReaisWrap"><span class="pre">R$</span><input type="number" id="entrada" value="20000" min="0" step="1000"></div>
+              <div class="inp hassuf hidden" id="entradaPctWrap"><input type="number" id="entradaPct" value="20" min="0" max="100" step="1"><span class="suf">%</span></div>
+              <p class="entrada-calc" id="entradaCalc"></p>
+            </div>
+            <div class="field">
+              <label>Prazo</label>
+              <div class="inp hassuf"><input type="number" id="prazo" value="48" min="1" step="1"><span class="suf">meses</span></div>
+            </div>
+            <div class="field">
+              <label>Tipo de financiamento</label>
+              <div class="seg" id="temJuros">
+                <button data-v="com" class="on">Com juros</button>
+                <button data-v="sem">Sem juros (0%)</button>
+              </div>
+            </div>
+            <div class="field" id="jurosWrap">
+              <label>Juros <span class="hint">(% a.m.)</span></label>
+              <div class="inp hassuf"><input type="number" id="juros" value="1.8" min="0" step="0.05"><span class="suf">% a.m.</span></div>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label>IOF fixo <span class="hint">(na liberação)</span></label>
+                <div class="inp hassuf"><input type="number" id="iofFixo" value="0.38" min="0" step="0.01"><span class="suf">%</span></div>
+              </div>
+              <div class="field">
+                <label>IOF diário <span class="hint">(PF padrão)</span></label>
+                <div class="inp hassuf"><input type="number" id="iofDiario" value="0.0082" min="0" step="0.0001"><span class="suf">%/dia</span></div>
+              </div>
+            </div>
+            <p class="note">IOF incide sobre o valor financiado e é <b>incorporado ao montante</b> (entra nas parcelas Price), mesmo em financiamento sem juros. Diária limitada a 365 dias → teto ~3,37%.</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2><span class="n">5</span> Aluguel / assinatura</h2>
+          <div class="body">
+            <div class="row">
+              <div class="field">
+                <label>Mensalidade</label>
+                <div class="inp haspre"><span class="pre">R$</span><input type="number" id="mensalidade" value="2500" min="0" step="50"></div>
+              </div>
+              <div class="field">
+                <label>Entrada / caução <span class="hint">(se houver)</span></label>
+                <div class="inp haspre"><span class="pre">R$</span><input type="number" id="entradaAluguel" value="0" min="0" step="500"></div>
+              </div>
+            </div>
+            <div class="field">
+              <label>Já incluído na mensalidade <span class="hint">(desmarque o que você pagaria à parte)</span></label>
+              <div class="chips" id="incluiChips">
+                <span class="chip on" data-k="manut"><span class="dot"></span>Manutenção</span>
+                <span class="chip on" data-k="ipva"><span class="dot"></span>IPVA</span>
+                <span class="chip on" data-k="seguro"><span class="dot"></span>Seguro</span>
+                <span class="chip on" data-k="pneus"><span class="dot"></span>Pneus</span>
+              </div>
+            </div>
+            <p class="note">Numa assinatura tudo costuma estar incluído (sem revenda no fim). Se for locação simples, desmarque o que sai do seu bolso.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- RESULTS -->
+      <section class="results" aria-label="Resultado">
+        <div class="verdict">
+          <p class="k">Mais barata a valor presente</p>
+          <p class="win"><span id="winName">—</span> <span class="pill">MAIS BARATA</span></p>
+          <p class="sub" id="winSub">—</p>
+        </div>
+        <div class="cards" id="cards"></div>
+        <div class="block">
+          <h3>Custo total a valor presente <span class="u">menor = melhor</span></h3>
+          <div class="bars" id="bars"></div>
+        </div>
+        <div class="block">
+          <h3>Custo acumulado ao longo do tempo <span class="u">VP acumulado × meses</span></h3>
+          <div class="chartwrap"><svg class="line" id="lineChart" viewBox="0 0 560 240" preserveAspectRatio="xMidYMid meet"></svg></div>
+          <div class="legend">
+            <span><i style="background:var(--avista)"></i>À vista</span>
+            <span><i style="background:var(--financiado)"></i>Financiado</span>
+            <span><i style="background:var(--aluguel)"></i>Aluguel</span>
+          </div>
+        </div>
+        <div class="block">
+          <h3>Composição do custo <span class="u">valor presente, R$</span></h3>
+          <table id="ledger">
+            <thead><tr><th>Item</th><th class="cav">À vista</th><th class="cfi">Financiado</th><th class="cal">Aluguel</th></tr></thead>
+            <tbody id="ledgerBody"></tbody>
+          </table>
+        </div>
+        <div class="block">
+          <h3>Detalhes do financiamento</h3>
+          <div class="info">
+            <div>Entrada efetiva<b id="iEntrada">—</b></div>
+            <div>Parcela (PMT)<b id="iPmt">—</b></div>
+            <div>IOF cobrado<b id="iIof">—</b></div>
+            <div>Juros nominais totais<b id="iJuros">—</b></div>
+            <div>Montante financiado<b id="iMont">—</b></div>
+          </div>
+        </div>
+        <footer class="assump">
+          <b>Como o cálculo funciona.</b> O horizonte vale para os três cenários. No financiado, se o prazo acabar antes do horizonte, as parcelas cessam e seguem só IPVA, seguro e manutenção até o fim. Se o prazo passar do horizonte, o saldo devedor residual é quitado na revenda (Tabela Price). IPVA e seguro em % são lançados no início de cada ano sobre o valor depreciado. O custo de oportunidade aparece como taxa de desconto que penaliza pagamentos futuros e valoriza a revenda futura menos do que o desembolso imediato à vista.
+        </footer>
+      </section>
+    </div>
+  </div>
+
+  <!-- ===== TAB 2: FLUXO DE CAIXA ===== -->
+  <div class="tab-panel" id="tab-fluxo">
+    <div class="cf-controls">
+      <label>Cenário:</label>
+      <div class="cf-scenario-tabs" id="cfScenarioTabs">
+        <button data-s="av" class="on-av">À Vista</button>
+        <button data-s="fi">Financiado</button>
+        <button data-s="al">Aluguel</button>
+      </div>
+    </div>
+
+    <div class="cf-summary-bar" id="cfSummary"></div>
+
+    <div class="block">
+      <h3 id="cfTableTitle">Fluxo de Caixa — À Vista <span class="u">valores nominais e a valor presente (VP)</span></h3>
+      <div class="cf-wrap">
+        <table class="cf-tbl" id="cfTable"></table>
+      </div>
+      <p class="cf-note" id="cfNote"></p>
+    </div>
+  </div>
+
+  <!-- ===== RODAPÉ (copyright) ===== -->
+  <footer class="site-footer copy-only">
+    <p class="sf-disclaimer">
+      Esta simulação é um mero exercício de análise e tem caráter apenas informativo. Não nos responsabilizamos pelo uso da ferramenta nem pelas consequências de eventuais decisões tomadas pelo usuário com base em seus resultados. Caso encontre algum erro ou tenha sugestões de melhoria, entre em contato pelo e-mail ao final da página.
+    </p>
+    <p class="sf-copy">
+      <b>COMPRAR × ALUGAR</b><br>
+      <span class="sf-sub">Simulador de Análise Econômica para Possuir um Carro</span><br>
+      © 2026 Silas Marinho de Queiroz Jr. Todos os direitos reservados.
+      &nbsp;·&nbsp;
+      <a href="mailto:comprarxalugar@gmail.com" style="color:#bfe8d5;text-decoration:none;display:inline-flex;align-items:center;gap:5px;vertical-align:middle">
+        <svg viewBox="0 0 24 24" fill="none" style="width:13px;height:13px;vertical-align:-2px"><rect x="3" y="5" width="18" height="14" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="m4 7 8 6 8-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        comprarxalugar@gmail.com
+      </a>
+    </p>
+  </footer>
+
+</div><!-- .wrap -->
+
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const num = id => { const v = parseFloat($(id).value); return isFinite(v) ? v : 0; };
+const brl = n => (n<0?'−':'') + 'R$ ' + Math.abs(Math.round(n)).toLocaleString('pt-BR');
+const brl2 = n => 'R$ ' + n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+const brl0 = n => n===0 ? '' : brl(n);
+const pct = n => n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})+'%';
+
+const state = {
+  temDinheiro:'sim', seguroModo:'pct', temJuros:'com', entradaModo:'reais',
+  inclui:{manut:true,ipva:true,seguro:true,pneus:true},
+  cfScenario:'av'
+};
+
+// ===================== FINANCIAL ENGINE =====================
+function build(){
+  const kmMes  = num('kmMes');
+  const T      = Math.max(1, Math.round(num('anos')*12));
+  const Y      = num('Y'), IR = num('IR');
+  const W      = Y*(1-IR/100);
+  const preco  = num('preco'), desval = num('desval');
+  const manutKm= Math.max(1,num('manutKm')), manutCusto = num('manutCusto');
+  const pneuKm = Math.max(1,num('pneuKm')), pneuCusto  = num('pneuCusto');
+  const ipvaA  = num('ipva');
+  const segModo= state.seguroModo, seguroPct = num('seguroPct'), seguroFixo = num('seguroFixo');
+
+  // entrada efetiva (reais ou %)
+  let entrada;
+  if(state.entradaModo==='pct'){
+    entrada = preco * num('entradaPct')/100;
+  } else {
+    entrada = num('entrada');
+  }
+
+  const prazo  = Math.max(1, Math.round(num('prazo')));
+  const juros  = state.temJuros==='sem' ? 0 : num('juros');
+  const iofFixo= num('iofFixo'), iofDiario = num('iofDiario');
+  const mensalidade   = num('mensalidade');
+  const entradaAluguel= num('entradaAluguel');
+
+  const df = m => 1/Math.pow(1+W/100, m);
+  const valorCarro = t => preco * Math.pow(1-desval/100, t/12);
+
+  // Accumulator: stores per-category totals AND full per-month event log
+  function mk(){
+    return {
+      bd:{}, order:[], monthly:new Array(T+1).fill(0), vp:0, nom:0,
+      events:[]   // [{m, cat, nom, vp}]
+    };
+  }
+  function add(a, cat, m, val){
+    if(!(cat in a.bd)){ a.bd[cat]={nom:0,vp:0}; a.order.push(cat); }
+    const v = val*df(m);
+    a.bd[cat].nom += val; a.bd[cat].vp += v;
+    a.nom += val; a.vp += v;
+    if(m<=T) a.monthly[m] += v;
+    a.events.push({m, cat, nom:val, vp:v});
+  }
+
+  function ownership(a, flags){
+    for(let t=1;t<=T;t++){
+      const kmA=kmMes*(t-1), kmB=kmMes*t;
+      if(flags.manut){
+        const r=Math.floor(kmB/manutKm)-Math.floor(kmA/manutKm);
+        if(r>0) add(a,'Manutenção',t,manutCusto*r);
+      }
+      if(flags.pneus){
+        const p=Math.floor(kmB/pneuKm)-Math.floor(kmA/pneuKm);
+        if(p>0) add(a,'Pneus',t,pneuCusto*p);
+      }
+    }
+    for(let m=0;m<T;m+=12){
+      const v=valorCarro(m);
+      if(flags.ipva) add(a,'IPVA',m,ipvaA/100*v);
+      if(flags.seguro){ const s=segModo==='pct' ? seguroPct/100*v : seguroFixo; add(a,'Seguro',m,s); }
+    }
+  }
+
+  // ---- À VISTA ----
+  const av = mk();
+  add(av,'Compra à vista',0,preco);
+  ownership(av,{manut:1,pneus:1,ipva:1,seguro:1});
+  add(av,'Revenda',T,-valorCarro(T));
+
+  // ---- FINANCIADO ----
+  const fi = mk();
+  const principal = Math.max(0, preco-entrada);
+  const iofRate   = iofFixo/100 + (iofDiario/100)*Math.min(prazo*30,365);
+  const iof       = principal*iofRate;
+  const montante  = principal+iof;
+  const i         = juros/100;
+  const PMT       = i===0 ? montante/prazo : montante*i/(1-Math.pow(1+i,-prazo));
+  if(entrada>0) add(fi,'Entrada',0,entrada);
+  // Parcelas só enquanto prazo não expirou E dentro do horizonte
+  const pagos = Math.min(prazo,T);
+  for(let t=1;t<=pagos;t++) add(fi,'Parcelas',t,PMT);
+  // Se horizonte > prazo: após o fim das parcelas, seguem só custos de posse (já adicionados via ownership abaixo)
+  // Se horizonte < prazo: quitar saldo residual na revenda
+  let saldoQuit = 0;
+  if(prazo > T){
+    saldoQuit = i===0 ? PMT*(prazo-T) : PMT*(1-Math.pow(1+i,-(prazo-T)))/i;
+    add(fi,'Quitação do saldo',T,saldoQuit);
+  }
+  ownership(fi,{manut:1,pneus:1,ipva:1,seguro:1});
+  add(fi,'Revenda',T,-valorCarro(T));
+  const totalPagoNom = PMT*pagos + saldoQuit;
+  const jurosNom     = totalPagoNom - principal - iof;
+
+  // ---- ALUGUEL ----
+  const al = mk();
+  if(entradaAluguel>0) add(al,'Entrada / caução',0,entradaAluguel);
+  for(let t=1;t<=T;t++) add(al,'Mensalidades',t,mensalidade);
+  ownership(al,{
+    manut:!state.inclui.manut, pneus:!state.inclui.pneus,
+    ipva:!state.inclui.ipva,   seguro:!state.inclui.seguro
+  });
+  // Rendimento do capital preservado: ao optar pelo aluguel, o comprador
+  // mantém "preco" aplicado e recebe W% líquido/mês. Essa receita reduz o
+  // custo efetivo do aluguel. Só se aplica quando o dinheiro existe (temDinheiro=sim).
+  const temCapital = state.temDinheiro === 'sim';
+  const rendMensal = preco * W / 100;   // rendimento líquido mensal sobre o capital preservado
+  if(temCapital && rendMensal > 0){
+    for(let t=1;t<=T;t++) add(al,'Rendimento do capital',t,-rendMensal);
+  }
+
+  return {T,kmMes,W,preco,prazo,rendMensal,temCapital,
+    av,fi,al,
+    fin:{PMT,iof,iofRate,montante,jurosNom,principal,entrada,saldoQuit,pagos}
+  };
+}
+
+// ===================== CASH FLOW TABLE =====================
+// Build a month-by-month table for one scenario object
+function buildCfTable(scenario, T, label, color){
+  // Group events by month
+  const byMonth = {};
+  scenario.events.forEach(e=>{
+    if(!byMonth[e.m]) byMonth[e.m] = [];
+    byMonth[e.m].push(e);
+  });
+
+  const months = Object.keys(byMonth).map(Number).sort((a,b)=>a-b);
+
+  let totalNom = 0, totalVp = 0;
+  const rows = [];
+
+  months.forEach(m=>{
+    const evs = byMonth[m];
+    const monNom = evs.reduce((s,e)=>s+e.nom,0);
+    const monVp  = evs.reduce((s,e)=>s+e.vp,0);
+    totalNom += monNom; totalVp += monVp;
+    const yr = m===0 ? 0 : Math.ceil(m/12);
+    const mLabel = m===0 ? 'Mês 0' : `Mês ${m}`;
+    const cats = evs.map(e=>`${e.cat}`).join(', ');
+    const isCredit = monNom < 0;
+    rows.push({m, mLabel, yr, cats, monNom, monVp, isCredit});
+  });
+
+  return {rows, totalNom, totalVp};
+}
+
+// ===================== RENDER =====================
+const SC = {
+  av:{cls:'avista',  label:'À vista',    color:'var(--avista)'},
+  fi:{cls:'financiado',label:'Financiado',color:'var(--financiado)'},
+  al:{cls:'aluguel', label:'Aluguel',    color:'var(--aluguel)'}
+};
+
+function render(){
+  const r   = build();
+  const T   = r.T;
+  const km  = r.kmMes*T || 1;
+  const items = [
+    {key:'av',...SC.av, vp:r.av.vp, nom:r.av.nom, kmc:r.av.vp/km, obj:r.av},
+    {key:'fi',...SC.fi, vp:r.fi.vp, nom:r.fi.nom, kmc:r.fi.vp/km, obj:r.fi},
+    {key:'al',...SC.al, vp:r.al.vp, nom:r.al.nom, kmc:r.al.vp/km, obj:r.al},
+  ];
+  const sorted = [...items].sort((a,b)=>a.vp-b.vp);
+  const winner = sorted[0], second = sorted[1];
+  const noCash = state.temDinheiro==='nao';
+
+  // verdict
+  $('winName').textContent = winner.label;
+  const econ = second.vp - winner.vp;
+  $('winSub').innerHTML = `Custo VP <b>${brl(winner.vp)}</b> — economia de <b>${brl(econ)}</b> sobre ${second.label.toLowerCase()} (${brl(second.vp)}).`;
+  document.querySelector('.verdict .pill').style.background = winner.color;
+
+  // cards
+  $('cards').innerHTML = items.map(it=>{
+    const win  = it.key===winner.key;
+    const warn = noCash && it.key==='av';
+    return `<div class="sc ${it.cls}${warn?' warn':''}">
+      ${win?'<span class="badge">MAIS BARATA</span>':''}
+      <p class="tag">${it.label}</p>
+      <p class="vp">${brl(it.vp)}</p>
+      <p class="vplabel">custo a valor presente</p>
+      <div class="meta"><span>nominal</span><b>${brl(it.nom)}</b></div>
+      <div class="meta" style="border-top:none;padding-top:4px"><span>por km</span><b>${brl2(it.kmc)}</b></div>
+      ${warn?'<p class="flag">Sem o valor à vista hoje — referência apenas.</p>':''}
+    </div>`;
+  }).join('');
+
+  // bars
+  const maxVp = Math.max(...items.map(i=>i.vp),1);
+  $('bars').innerHTML = items.map(it=>`
+    <div class="bar ${it.cls}">
+      <div class="top"><span class="nm">${it.label}</span><span class="vl">${brl(it.vp)}</span></div>
+      <div class="track"><div class="fill" style="width:${Math.max(2,it.vp/maxVp*100).toFixed(1)}%"></div></div>
+    </div>`).join('');
+
+  // ledger
+  const cats = ['Compra à vista','Entrada','Parcelas','Quitação do saldo','Entrada / caução',
+                'Mensalidades','Rendimento do capital','Manutenção','IPVA','Seguro','Pneus','Revenda'];
+  const creditCats = new Set(['Revenda','Rendimento do capital']);
+  const cell = (obj,cat)=> obj.bd[cat]!==undefined ? obj.bd[cat].vp : null;
+  let rows = '';
+  cats.forEach(cat=>{
+    const a=cell(r.av,cat), f=cell(r.fi,cat), l=cell(r.al,cat);
+    if(a===null&&f===null&&l===null) return;
+    const isCredit = creditCats.has(cat);
+    const c = v => v===null ? '<span class="dim">—</span>' : brl(v);
+    rows += `<tr class="${isCredit?'credit':''}"><td>${cat}</td><td>${c(a)}</td><td>${c(f)}</td><td>${c(l)}</td></tr>`;
+  });
+  rows += `<tr class="total"><td>Total (VP)</td><td>${brl(r.av.vp)}</td><td>${brl(r.fi.vp)}</td><td>${brl(r.al.vp)}</td></tr>`;
+  $('ledgerBody').innerHTML = rows;
+
+  // financing details
+  $('iEntrada').textContent = brl(r.fin.entrada);
+  $('iPmt').textContent     = brl2(r.fin.PMT);
+  $('iIof').textContent     = brl(r.fin.iof)+' ('+pct(r.fin.iofRate*100)+')';
+  $('iJuros').textContent   = brl(Math.max(0,r.fin.jurosNom));
+  $('iMont').textContent    = brl(r.fin.montante);
+
+  // entrada calc hint
+  if(state.entradaModo==='pct'){
+    $('entradaCalc').innerHTML = `= <b>${brl(r.fin.entrada)}</b> (${pct(num('entradaPct'))} × ${brl(r.preco)})`;
+  } else {
+    $('entradaCalc').innerHTML = '';
+  }
+
+  // W display
+  const W = r.W;
+  $('wOut').textContent  = W.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})+'% a.m.';
+  $('waOut').textContent = ((Math.pow(1+W/100,12)-1)*100).toLocaleString('pt-BR',{maximumFractionDigits:1})+'%';
+  $('temNote').innerHTML = noCash
+    ? 'Sem o valor à vista, essa alternativa fica <b>inviável na prática</b> — o número é exibido só como referência. A comparação real é financiar vs. alugar.'
+    : 'Com o dinheiro em mãos, pagar à vista significa <b>abrir mão do rendimento</b> — é exatamente esse custo que a taxa de desconto captura.';
+
+  // chart
+  drawLine(r);
+
+  // cash flow tab
+  renderCfTab(r);
+}
+
+function drawLine(r){
+  const T=r.T, x0=8, y0=8;
+  const series=[
+    {c:'var(--avista)',  m:r.av.monthly},
+    {c:'var(--financiado)',m:r.fi.monthly},
+    {c:'var(--aluguel)', m:r.al.monthly},
+  ];
+  const cum=s=>{let a=0;return s.map(v=>a+=v);};
+  const curves=series.map(s=>({c:s.c,d:cum(s.m)}));
+  let maxY=0; curves.forEach(c=>c.d.forEach(v=>{if(v>maxY)maxY=v;}));
+  maxY=Math.max(maxY,1);
+  const px=t=>x0+(t/T)*(560-x0-8);
+  const py=v=>y0+(1-v/maxY)*(210-y0);
+  const svg=$('lineChart');
+  let g=`<line x1="${x0}" y1="${py(0)}" x2="552" y2="${py(0)}" stroke="var(--line)" stroke-width="1"/>`;
+  for(let k=1;k<=3;k++){const v=maxY*k/4,y=py(v);
+    g+=`<line x1="${x0}" y1="${y}" x2="552" y2="${y}" stroke="var(--line2)" stroke-width="1"/>`;
+    g+=`<text x="${x0+2}" y="${y-3}" font-size="9" fill="var(--muted2)" font-family="var(--mono)">${brl(v)}</text>`;}
+  curves.forEach(c=>{
+    let d=''; c.d.forEach((v,t)=>{d+=(t===0?'M':'L')+px(t).toFixed(1)+' '+py(v).toFixed(1)+' ';});
+    g+=`<path d="${d}" fill="none" stroke="${c.c}" stroke-width="2.2" stroke-linejoin="round"/>`;
+    g+=`<circle cx="${px(T).toFixed(1)}" cy="${py(c.d[T]).toFixed(1)}" r="3" fill="${c.c}"/>`;
+  });
+  const years=Math.ceil(T/12);
+  for(let yv=0;yv<=years;yv++){const t=Math.min(yv*12,T),x=px(t);
+    g+=`<text x="${x}" y="234" font-size="9" fill="var(--muted2)" text-anchor="middle" font-family="var(--mono)">${yv}a</text>`;}
+  svg.innerHTML=g;
+}
+
+// ===================== CASH FLOW TAB =====================
+function renderCfTab(r){
+  const s = state.cfScenario;
+  const scenObj = s==='av' ? r.av : s==='fi' ? r.fi : r.al;
+  const sc = SC[s];
+  const T  = r.T;
+
+  // Update scenario tab buttons
+  $('cfScenarioTabs').querySelectorAll('button').forEach(b=>{
+    b.className = b.dataset.s===s ? `on-${b.dataset.s}` : '';
+  });
+
+  $('cfTableTitle').innerHTML = `Fluxo de Caixa — ${sc.label} <span class="u">valores nominais e a valor presente (VP)</span>`;
+
+  // Build month-by-month events
+  const byMonth = {};
+  scenObj.events.forEach(e=>{
+    if(!byMonth[e.m]) byMonth[e.m]=[];
+    byMonth[e.m].push(e);
+  });
+  const months = Object.keys(byMonth).map(Number).sort((a,b)=>a-b);
+
+  // Column headers — gather all unique categories in order of appearance
+  const catSet = [];
+  const catSeen = {};
+  scenObj.events.forEach(e=>{ if(!catSeen[e.cat]){catSeen[e.cat]=1;catSet.push(e.cat);}});
+
+  // Summary KPIs
+  let totalNom=0, totalVp=0;
+  scenObj.events.forEach(e=>{totalNom+=e.nom;totalVp+=e.vp;});
+  const nomPos = scenObj.events.filter(e=>e.nom>0).reduce((s,e)=>s+e.nom,0);
+  const nomNeg = scenObj.events.filter(e=>e.nom<0).reduce((s,e)=>s+e.nom,0);
+
+  $('cfSummary').innerHTML = [
+    {k:'Desembolso total (nominal)', v:brl(nomPos), hi:false},
+    {k:'Receita revenda (nominal)',  v:brl(Math.abs(nomNeg)), hi:false},
+    {k:'Saldo nominal',             v:brl(nomPos+nomNeg), hi:false},
+    {k:'Custo a valor presente',    v:brl(totalVp), hi:true},
+  ].map(kv=>`<div class="cf-kv${kv.hi?' hi':''}"><p class="k">${kv.k}</p><p class="v">${kv.v}</p></div>`).join('');
+
+  // Build table
+  // One row per month where something happens; columns = Mês | Ano | [cats…] | Total nominal | VP descontado | VP acum.
+  const W = r.W;
+  const df = m => 1/Math.pow(1+W/100, m);
+
+  let tHead = `<thead><tr>
+    <th class="month-col">Mês</th>
+    <th class="month-col">Ano</th>
+    ${catSet.map(c=>`<th>${c}</th>`).join('')}
+    <th>Total nominal</th>
+    <th>Fator VP</th>
+    <th>Total VP</th>
+    <th>VP acumulado</th>
+  </tr></thead>`;
+
+  let vpAcum=0, tBody='<tbody>';
+  months.forEach(m=>{
+    const evs = byMonth[m];
+    const catMap = {};
+    evs.forEach(e=>{ catMap[e.cat]=(catMap[e.cat]||0)+e.nom; });
+    const monNom = Object.values(catMap).reduce((s,v)=>s+v,0);
+    const monVp  = monNom * df(m);
+    vpAcum += monVp;
+    const yr = m===0 ? '0' : String(Math.ceil(m/12));
+    const isCredit = monNom<0;
+    const cc = isCredit ? ' class="credit"' : '';
+    tBody += `<tr${cc}>
+      <td class="month-col">Mês ${m}</td>
+      <td class="month-col">${yr===0?'0':yr}º ano</td>
+      ${catSet.map(c=>{
+        const v=catMap[c]||0;
+        if(v===0) return `<td class="zero">—</td>`;
+        return `<td${v<0?' class="neg"':''}>${brl(v)}</td>`;
+      }).join('')}
+      <td${isCredit?' class="neg"':''}>${brl(monNom)}</td>
+      <td class="zero">${df(m).toFixed(4)}</td>
+      <td${isCredit?' class="neg"':''}>${brl(monVp)}</td>
+      <td>${brl(vpAcum)}</td>
+    </tr>`;
+  });
+
+  // Total row
+  const colSpanCats = catSet.map(c=>{
+    const tot = scenObj.events.filter(e=>e.cat===c).reduce((s,e)=>s+e.nom,0);
+    return `<td>${brl(tot)}</td>`;
+  }).join('');
+  tBody += `<tr class="cf-total-row">
+    <td colspan="2">TOTAL</td>
+    ${colSpanCats}
+    <td>${brl(totalNom)}</td>
+    <td class="zero">—</td>
+    <td>${brl(totalVp)}</td>
+    <td>${brl(totalVp)}</td>
+  </tr></tbody>`;
+
+  $('cfTable').innerHTML = tHead + tBody;
+
+  // Note
+  const notes = {
+    av:`Compra paga no mês 0 (sem desconto). Custos de posse pagos nos meses em que ocorrem. Revenda no mês ${r.T} (sinal negativo = entrada de caixa).`,
+    fi:`Entrada no mês 0. Parcelas nos meses 1–${r.fin.pagos}${r.fin.saldoQuit>0?` e quitação de saldo no mês ${r.T} (horizonte < prazo)`:(r.prazo<r.T?`; após o mês ${r.prazo} as parcelas cessam e seguem só os custos de posse`:'')}.`,
+    al:`Mensalidades pagas mês a mês. Sem revenda ao final.${r.temCapital?' O rendimento do capital ('+brl2(r.rendMensal)+'/mês sobre '+brl(r.preco)+' preservado) é lançado como crédito redutor — representa o ganho financeiro de NÃO imobilizar o capital na compra.':' (Rendimento do capital não aplicado: você não dispõe do valor à vista.)'}`
+  };
+  $('cfNote').textContent = notes[s];
+}
+
+// ===================== WIRING =====================
+document.querySelectorAll('input').forEach(el=>el.addEventListener('input',render));
+
+function segWire(id, key, extra){
+  const seg=$(id);
+  if(!seg) return;
+  seg.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+    seg.querySelectorAll('button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); state[key]=b.dataset.v; if(extra)extra(b.dataset.v); render();
+  }));
+}
+segWire('temDinheiro','temDinheiro');
+segWire('temJuros','temJuros', v=>{ $('jurosWrap').classList.toggle('hidden',v==='sem'); });
+segWire('seguroModo','seguroModo', v=>{
+  $('segPctWrap').classList.toggle('hidden',v!=='pct');
+  $('segFixWrap').classList.toggle('hidden',v!=='fixo');
+});
+segWire('entradaModo','entradaModo', v=>{
+  $('entradaReaisWrap').classList.toggle('hidden',v!=='reais');
+  $('entradaPctWrap').classList.toggle('hidden',v!=='pct');
+  render();
+});
+
+$('incluiChips').querySelectorAll('.chip').forEach(ch=>ch.addEventListener('click',()=>{
+  const k=ch.dataset.k; state.inclui[k]=!state.inclui[k];
+  ch.classList.toggle('on',state.inclui[k]); render();
+}));
+
+// Tab switching
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    $('tab-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+// CF scenario tabs
+$('cfScenarioTabs').querySelectorAll('button').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    state.cfScenario=btn.dataset.s;
+    const r=build(); renderCfTab(r);
+  });
+});
+
+render();
+</script>
+</body>
+</html>
