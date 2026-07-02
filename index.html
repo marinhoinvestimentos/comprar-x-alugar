@@ -102,7 +102,18 @@ h1{font-family:var(--display)}
 .panel>h2 .n{font-family:var(--display);font-size:12px;color:#fff;background:var(--brand);width:24px;height:24px;
   border-radius:8px;display:grid;place-items:center;font-weight:700;box-shadow:0 3px 8px rgba(18,183,106,.3)}
 .body{padding:17px 20px}
+.subhead{font-family:var(--display);font-size:12.5px;font-weight:600;color:var(--ink);margin:20px 0 14px;
+  padding-top:16px;border-top:1px dashed var(--line);display:flex;align-items:center;gap:8px}
+.subhead span{font-family:var(--mono);font-weight:400;font-size:10.5px;color:var(--muted2);text-transform:none}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px}
+/* pares chave+campo: alinham o input pela base para casar com o seg acima */
+.pair-row{align-items:end}
+.pair-row .field{margin-bottom:12px}
+/* quando o campo de juros some (sem juros), a chave ocupa a linha toda */
+.pair-row.solo{grid-template-columns:1fr}
+@media(max-width:560px){
+  .pair-row{grid-template-columns:1fr;gap:0}
+}
 .field{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
 .field:last-child{margin-bottom:0}
 label{font-size:12.5px;color:#45433d;font-weight:500}
@@ -232,9 +243,10 @@ footer.assump b{color:var(--ink)}
 .consult{background:radial-gradient(120% 160% at 50% 0%,var(--hero2),var(--hero) 60%,#08201a);
   color:#dcefe6;border-radius:22px;padding:34px 34px 30px;margin-bottom:24px;overflow:hidden;position:relative;
   box-shadow:0 10px 30px rgba(11,31,26,.12)}
-.consult-cta{max-width:640px;margin:0 auto;text-align:center;display:flex;flex-direction:column;align-items:center}
+.consult-cta{max-width:700px;margin:0 auto;text-align:center;display:flex;flex-direction:column;align-items:center}
 .consult-cta h3{font-family:var(--display);font-weight:700;font-size:clamp(19px,2.4vw,26px);line-height:1.18;margin:0 0 12px;color:#fff}
 .consult-cta h3 em{font-style:normal;color:var(--mint)}
+.consult-sub{font-family:var(--display);font-weight:600;font-size:clamp(15px,1.9vw,19px);color:var(--mint);margin:0 0 14px;line-height:1.3}
 .consult-cta p{font-size:14px;color:#a9cdbd;margin:0 0 22px;line-height:1.6}
 .consult-btn{display:inline-flex;align-items:center;gap:9px;font-family:var(--display);font-weight:600;font-size:14px;
   text-decoration:none;padding:13px 22px;border-radius:13px;background:linear-gradient(135deg,var(--brand),#0bd47f);
@@ -245,11 +257,12 @@ footer.assump b{color:var(--ink)}
   display:flex;flex-direction:column;align-items:center;text-align:center}
 .consult-tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
   color:var(--mint);background:rgba(18,183,106,.16);padding:5px 12px;border-radius:20px;margin-bottom:12px}
-.consult-name{font-family:var(--display);font-weight:700;font-size:16px;color:#fff;margin:0 0 4px;white-space:nowrap}
-.consult-role{font-size:13px;color:#a9cdbd;margin:0;line-height:1.5}
+.consult-name{font-family:var(--display);font-weight:700;font-size:16px;color:#fff;margin:0 0 8px;white-space:nowrap}
+.consult-role{font-size:12.5px;color:#a9cdbd;margin:0;line-height:1.65;text-align:justify}
 @media(max-width:820px){
   .consult{padding:28px 22px 26px}
   .consult-name{white-space:normal}
+  .consult-role{text-align:center}
 }
 
 /* ===== CONTACT FOOTER ===== */
@@ -289,9 +302,63 @@ footer.assump b{color:var(--ink)}
   .site-footer{padding:30px 24px;margin:30px -20px 0}
   .site-footer .sf-inner{grid-template-columns:1fr;gap:26px}
 }
+/* ===== ESTADO DESATIVADO ===== */
+.panel.locked{position:relative;opacity:.5;pointer-events:none;filter:grayscale(.35)}
+.panel.locked::after{content:"🔒 Indisponível na sua situação";position:absolute;top:10px;right:14px;
+  font-family:var(--body);font-size:10.5px;font-weight:600;color:var(--muted);background:#eef4f1;
+  padding:4px 10px;border-radius:20px;pointer-events:none}
+.seg.locked-keep{pointer-events:auto !important}
+
+/* ===== MODAL POPUP ===== */
+.modal-overlay{position:fixed;inset:0;background:rgba(8,20,16,.72);backdrop-filter:blur(3px);
+  display:none;align-items:center;justify-content:center;z-index:1000;padding:20px}
+.modal-overlay.show{display:flex}
+.modal-box{background:var(--card);border-radius:22px;max-width:440px;width:100%;padding:0;overflow:hidden;
+  box-shadow:0 24px 70px rgba(8,20,16,.5);position:relative;animation:modalpop .28s cubic-bezier(.22,1,.36,1)}
+@keyframes modalpop{from{transform:scale(.9) translateY(10px);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-head{background:radial-gradient(130% 130% at 80% 0%,var(--hero2),var(--hero));padding:26px 28px 22px;position:relative}
+.modal-head .ic{width:48px;height:48px;border-radius:14px;background:rgba(247,144,9,.18);border:1px solid rgba(247,144,9,.35);
+  display:grid;place-items:center;margin-bottom:14px}
+.modal-head .ic svg{width:26px;height:26px}
+.modal-head h4{font-family:var(--display);font-weight:700;font-size:17px;color:#fff;margin:0;line-height:1.3}
+.modal-close{position:absolute;top:16px;right:16px;width:34px;height:34px;border-radius:10px;border:none;
+  background:rgba(255,255,255,.1);color:#eafff5;cursor:pointer;display:grid;place-items:center;transition:background .15s}
+.modal-close:hover{background:rgba(255,255,255,.2)}
+.modal-close svg{width:18px;height:18px}
+.modal-body{padding:22px 28px 26px}
+.modal-body p{font-size:14px;color:#3c4a44;line-height:1.6;margin:0 0 20px}
+.modal-body p b{color:var(--ink)}
+.modal-actions{display:flex;gap:10px}
+.modal-btn{flex:1;font-family:var(--display);font-weight:600;font-size:14px;border:none;border-radius:12px;
+  padding:12px;cursor:pointer;transition:transform .15s,box-shadow .15s}
+.modal-btn.primary{background:linear-gradient(135deg,var(--brand),#0bd47f);color:#fff;box-shadow:0 6px 18px rgba(18,183,106,.35)}
+.modal-btn.primary:hover{transform:translateY(-1px)}
 </style>
 </head>
 <body>
+
+<!-- ===== MODAL: só resta aluguel ===== -->
+<div class="modal-overlay" id="modalOnlyRent">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="ic">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 9v4m0 4h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" stroke="#f79009" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h4>Não há análise econômica a ser realizada</h4>
+      <button class="modal-close" id="modalCloseBtn" aria-label="Fechar">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p>Como você não tem o valor para comprar à vista <b>nem</b> os 20% para dar de entrada num financiamento, sua única alternativa será <b>alugar um carro por assinatura</b>, caso tenha condições de arcar com o valor da mensalidade.</p>
+      <p style="font-size:12.5px;color:var(--muted);margin-bottom:22px">Os demais campos foram desativados. Para reativá-los, ajuste as respostas sobre o valor à vista ou a entrada no painel “Custo de oportunidade”.</p>
+      <div class="modal-actions">
+        <button class="modal-btn primary" id="modalOkBtn">Entendi, quero simular o aluguel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="wrap">
   <header class="hero">
     <div class="hero-inner">
@@ -316,8 +383,9 @@ footer.assump b{color:var(--ink)}
   <!-- ===== CONSULTORIA (topo) ===== -->
   <section class="consult">
     <div class="consult-cta">
-      <h3>Quer <em>mudar sua vida</em> por meio da Consultoria Financeira Comportamental?</h3>
-      <p>Seja na sua vida pessoal ou da sua empresa, tomar decisões financeiras com clareza é o primeiro passo para o sucesso — como a que esse simulador oferece. Entre em contato agora e transforme sua vida.</p>
+      <h3>Quer vencer as dívidas, controlar seu orçamento, aprender a investir e realizar <em>todos os seus sonhos?</em></h3>
+      <p class="consult-sub">Então você precisa de uma Consultoria Financeira Comportamental!!!</p>
+      <p>Entre em contato agora e agende um bate-papo para conhecer como podemos lhe ajudar a dar a virada que sua vida precisa.</p>
       <a class="consult-btn" href="https://wa.me/5521996005404" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.15-1.7-.84-2-.93-.26-.1-.45-.15-.64.14-.19.29-.74.93-.9 1.12-.17.19-.33.21-.62.07-.29-.15-1.22-.45-2.32-1.43-.86-.77-1.44-1.71-1.6-2-.17-.29-.02-.44.13-.59.13-.13.29-.33.43-.5.15-.16.19-.28.29-.47.1-.19.05-.36-.02-.5-.07-.15-.64-1.55-.88-2.12-.23-.56-.47-.48-.64-.49h-.55c-.19 0-.5.07-.76.36-.26.29-1 .98-1 2.38 0 1.4 1.02 2.76 1.17 2.95.14.19 2.02 3.08 4.9 4.32.68.29 1.22.47 1.64.6.69.22 1.31.19 1.81.11.55-.08 1.7-.69 1.94-1.36.24-.67.24-1.24.17-1.36-.07-.12-.26-.19-.55-.34ZM12.05 21.7h-.01a9.6 9.6 0 0 1-4.9-1.34l-.35-.21-3.65.96.97-3.56-.23-.37a9.58 9.58 0 0 1 14.88-11.9 9.53 9.53 0 0 1 2.8 6.78c0 5.29-4.3 9.6-9.6 9.6Zm8.17-17.76A11.42 11.42 0 0 0 12.05.6C5.8.6.72 5.68.72 11.93c0 2 .52 3.95 1.52 5.67L.63 23.4l5.94-1.56a11.36 11.36 0 0 0 5.48 1.4h.01c6.24 0 11.32-5.08 11.33-11.33a11.26 11.26 0 0 0-3.17-7.97Z"/></svg>
         WhatsApp (21) 99600-5404
@@ -325,7 +393,7 @@ footer.assump b{color:var(--ink)}
       <div class="consult-author">
         <span class="consult-tag">Autoria &amp; Consultoria</span>
         <p class="consult-name">Silas Marinho de Queiroz Jr.</p>
-        <p class="consult-role">Consultoria Financeira Comportamental para Pessoas e Empresas</p>
+        <p class="consult-role">Administrador pela EAUFBA, com MBA em Finanças, Auditoria e Controladoria pela FGV e em Análise de Ações Stock Picking pelo IBMEC em parceria com a XP, Silas Marinho possui mais de 30 anos de experiência em gestão de negócios, finanças pessoais e empresariais, contabilidade, tributos, análise econômica, análise de riscos, planejamentos financeiro, de vida, tributário, patrimonial e sucessório, além de ter ministrado cursos nestas áreas para mais de 5 mil alunos.</p>
       </div>
     </div>
   </section>
@@ -342,50 +410,8 @@ footer.assump b{color:var(--ink)}
       <!-- INPUTS -->
       <section aria-label="Premissas">
 
-        <div class="panel">
-          <h2><span class="n">1</span> Uso &amp; horizonte</h2>
-          <div class="body">
-            <div class="row">
-              <div class="field">
-                <label>Rodagem <span class="hint">(km / mês)</span></label>
-                <div class="inp hassuf"><input type="number" id="kmMes" value="1500" min="0" step="100"><span class="suf">km</span></div>
-              </div>
-              <div class="field">
-                <label>Tempo de posse / horizonte <span class="hint">(anos)</span></label>
-                <div class="inp hassuf"><input type="number" id="anos" value="5" min="0.5" step="0.5"><span class="suf">anos</span></div>
-              </div>
-            </div>
-            <p class="note">O horizonte define a duração da análise para <b>todos</b> os cenários. Se o financiamento terminar antes, as parcelas cessam e ficam só os custos de posse (IPVA, seguro, manutenção).</p>
-          </div>
-        </div>
-
-        <div class="panel">
-          <h2><span class="n">2</span> Custo de oportunidade <span style="font-weight:400;color:var(--muted2);font-size:11px;font-family:var(--mono)">taxa de desconto</span></h2>
-          <div class="body">
-            <div class="row">
-              <div class="field">
-                <label>Rendimento bruto <span class="hint">(% a.m.)</span></label>
-                <div class="inp hassuf"><input type="number" id="Y" value="1.0" min="0" step="0.05"><span class="suf">% a.m.</span></div>
-              </div>
-              <div class="field">
-                <label>IR sobre o rendimento <span class="hint">(%)</span></label>
-                <div class="inp hassuf"><input type="number" id="IR" value="15" min="0" max="100" step="0.5"><span class="suf">%</span></div>
-              </div>
-            </div>
-            <div class="field">
-              <label>Você tem o valor para comprar à vista hoje?</label>
-              <div class="seg" id="temDinheiro">
-                <button data-v="sim" class="on">Tenho</button>
-                <button data-v="nao">Não tenho</button>
-              </div>
-            </div>
-            <p class="wcalc">Taxa de desconto líquida: <b id="wOut">0,85% a.m.</b> <span class="dim">(≈ <span id="waOut">10,7%</span> a.a.)</span></p>
-            <p class="note" id="temNote"></p>
-          </div>
-        </div>
-
-        <div class="panel">
-          <h2><span class="n">3</span> Veículo &amp; custos de posse <span style="font-weight:400;color:var(--muted2);font-size:11px;font-family:var(--mono)">cenários de compra</span></h2>
+        <div class="panel" id="panel1">
+          <h2><span class="n">1</span> Valor do veículo, como vou usar e quanto custa manter</h2>
           <div class="body">
             <div class="row">
               <div class="field">
@@ -419,8 +445,13 @@ footer.assump b{color:var(--ink)}
             </div>
             <div class="row">
               <div class="field">
-                <label>IPVA <span class="hint">(% valor venal, a.a.)</span></label>
-                <div class="inp hassuf"><input type="number" id="ipva" value="4" min="0" max="10" step="0.25"><span class="suf">%</span></div>
+                <label>IPVA anual</label>
+                <div class="seg small" id="ipvaModo" style="margin-bottom:6px">
+                  <button data-v="pct" class="on">% do valor</button>
+                  <button data-v="fixo">R$ fixo</button>
+                </div>
+                <div class="inp hassuf" id="ipvaPctWrap"><input type="number" id="ipva" value="4" min="0" max="10" step="0.25"><span class="suf">% a.a.</span></div>
+                <div class="inp haspre hidden" id="ipvaFixWrap"><span class="pre">R$</span><input type="number" id="ipvaFixo" value="4000" min="0" step="100"></div>
               </div>
               <div class="field">
                 <label>Seguro anual</label>
@@ -432,37 +463,86 @@ footer.assump b{color:var(--ink)}
                 <div class="inp haspre hidden" id="segFixWrap"><span class="pre">R$</span><input type="number" id="seguroFixo" value="4000" min="0" step="100"></div>
               </div>
             </div>
-            <p class="note">IPVA e seguro em % incidem sobre o valor <b>já depreciado</b> em cada ano de posse.</p>
+            <div class="row">
+              <div class="field">
+                <label>Rodagem <span class="hint">(km / mês)</span></label>
+                <div class="inp hassuf"><input type="number" id="kmMes" value="1500" min="0" step="100"><span class="suf">km</span></div>
+              </div>
+              <div class="field">
+                <label>Tempo de posse / horizonte <span class="hint">(anos)</span></label>
+                <div class="inp hassuf"><input type="number" id="anos" value="5" min="0.5" step="0.5"><span class="suf">anos</span></div>
+              </div>
+            </div>
+            <p class="note">O horizonte define a duração da análise para <b>todos</b> os cenários. Se o financiamento terminar antes, as parcelas cessam e ficam só os custos de posse (IPVA, seguro, manutenção). IPVA e seguro em % incidem sobre o valor <b>já depreciado</b> em cada ano de posse.</p>
           </div>
         </div>
 
-        <div class="panel">
-          <h2><span class="n">4</span> Financiamento <span style="font-weight:400;color:var(--muted2);font-size:11px;font-family:var(--mono)">Tabela Price</span></h2>
+        <div class="panel" id="panel2">
+          <h2><span class="n">2</span> Capital disponível e custos de oportunidade de mantê-lo investido</h2>
           <div class="body">
             <div class="field">
-              <label>Entrada</label>
-              <div class="seg small" id="entradaModo" style="margin-bottom:8px">
-                <button data-v="reais" class="on">R$ valor fixo</button>
-                <button data-v="pct">% do preço</button>
+              <label>Você tem o valor para comprar à vista hoje?</label>
+              <div class="seg" id="temDinheiro">
+                <button data-v="sim" class="on">Tenho</button>
+                <button data-v="nao">Não tenho</button>
               </div>
-              <div class="inp haspre" id="entradaReaisWrap"><span class="pre">R$</span><input type="number" id="entrada" value="20000" min="0" step="1000"></div>
-              <div class="inp hassuf hidden" id="entradaPctWrap"><input type="number" id="entradaPct" value="20" min="0" max="100" step="1"><span class="suf">%</span></div>
-              <p class="entrada-calc" id="entradaCalc"></p>
             </div>
+            <div class="field hidden" id="temEntradaWrap">
+              <label>Tem pelo menos 20% do valor do veículo para dar de entrada num financiamento?</label>
+              <div class="seg" id="temEntrada">
+                <button data-v="sim" class="on">Tenho a entrada</button>
+                <button data-v="nao">Não tenho</button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label>Rendimento bruto mensal do capital investido <span class="hint">(% a.m.)</span></label>
+                <div class="inp hassuf"><input type="number" id="Y" value="1.0" min="0" step="0.05"><span class="suf">% a.m.</span></div>
+              </div>
+              <div class="field">
+                <label>IR sobre o rendimento <span class="hint">(%)</span></label>
+                <div class="inp hassuf"><input type="number" id="IR" value="15" min="0" max="100" step="0.5"><span class="suf">%</span></div>
+              </div>
+            </div>
+            <p class="wcalc">Taxa de desconto líquida: <b id="wOut">0,85% a.m.</b> <span class="dim">(≈ <span id="waOut">10,7%</span> a.a.)</span></p>
+            <p class="note" id="temNote"></p>
+          </div>
+        </div>
+
+        <div class="panel" id="panel4">
+          <h2><span class="n">3</span> Financiamento <span style="font-weight:400;color:var(--muted2);font-size:11px;font-family:var(--mono)">Tabela Price</span></h2>
+          <div class="body">
+            <div class="row pair-row">
+              <div class="field">
+                <label>Entrada</label>
+                <div class="seg small" id="entradaModo" style="margin-bottom:8px">
+                  <button data-v="reais" class="on">R$ valor fixo</button>
+                  <button data-v="pct">% do preço</button>
+                </div>
+              </div>
+              <div class="field">
+                <label>Valor da entrada</label>
+                <div class="inp haspre" id="entradaReaisWrap"><span class="pre">R$</span><input type="number" id="entrada" value="20000" min="0" step="1000"></div>
+                <div class="inp hassuf hidden" id="entradaPctWrap"><input type="number" id="entradaPct" value="20" min="0" max="100" step="1"><span class="suf">%</span></div>
+              </div>
+            </div>
+            <p class="entrada-calc" id="entradaCalc"></p>
             <div class="field">
               <label>Prazo</label>
               <div class="inp hassuf"><input type="number" id="prazo" value="48" min="1" step="1"><span class="suf">meses</span></div>
             </div>
-            <div class="field">
-              <label>Tipo de financiamento</label>
-              <div class="seg" id="temJuros">
-                <button data-v="com" class="on">Com juros</button>
-                <button data-v="sem">Sem juros (0%)</button>
+            <div class="row pair-row">
+              <div class="field">
+                <label>Tipo de financiamento</label>
+                <div class="seg" id="temJuros">
+                  <button data-v="com" class="on">Com juros</button>
+                  <button data-v="sem">Sem juros (0%)</button>
+                </div>
               </div>
-            </div>
-            <div class="field" id="jurosWrap">
-              <label>Juros <span class="hint">(% a.m.)</span></label>
-              <div class="inp hassuf"><input type="number" id="juros" value="1.8" min="0" step="0.05"><span class="suf">% a.m.</span></div>
+              <div class="field" id="jurosWrap">
+                <label>Juros <span class="hint">(% a.m.)</span></label>
+                <div class="inp hassuf"><input type="number" id="juros" value="1.8" min="0" step="0.05"><span class="suf">% a.m.</span></div>
+              </div>
             </div>
             <div class="row">
               <div class="field">
@@ -478,8 +558,8 @@ footer.assump b{color:var(--ink)}
           </div>
         </div>
 
-        <div class="panel">
-          <h2><span class="n">5</span> Aluguel / assinatura</h2>
+        <div class="panel" id="panel5">
+          <h2><span class="n">4</span> Aluguel / assinatura</h2>
           <div class="body">
             <div class="row">
               <div class="field">
@@ -521,9 +601,9 @@ footer.assump b{color:var(--ink)}
           <h3>Custo acumulado ao longo do tempo <span class="u">VP acumulado × meses</span></h3>
           <div class="chartwrap"><svg class="line" id="lineChart" viewBox="0 0 560 240" preserveAspectRatio="xMidYMid meet"></svg></div>
           <div class="legend">
-            <span><i style="background:var(--avista)"></i>À vista</span>
-            <span><i style="background:var(--financiado)"></i>Financiado</span>
-            <span><i style="background:var(--aluguel)"></i>Aluguel</span>
+            <span id="leg-av"><i style="background:var(--avista)"></i>À vista</span>
+            <span id="leg-fi"><i style="background:var(--financiado)"></i>Financiado</span>
+            <span id="leg-al"><i style="background:var(--aluguel)"></i>Aluguel</span>
           </div>
         </div>
         <div class="block">
@@ -601,7 +681,7 @@ const brl0 = n => n===0 ? '' : brl(n);
 const pct = n => n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})+'%';
 
 const state = {
-  temDinheiro:'sim', seguroModo:'pct', temJuros:'com', entradaModo:'reais',
+  temDinheiro:'sim', temEntrada:'sim', seguroModo:'pct', ipvaModo:'pct', temJuros:'com', entradaModo:'reais',
   inclui:{manut:true,ipva:true,seguro:true,pneus:true},
   cfScenario:'av'
 };
@@ -615,7 +695,7 @@ function build(){
   const preco  = num('preco'), desval = num('desval');
   const manutKm= Math.max(1,num('manutKm')), manutCusto = num('manutCusto');
   const pneuKm = Math.max(1,num('pneuKm')), pneuCusto  = num('pneuCusto');
-  const ipvaA  = num('ipva');
+  const ipvaModo = state.ipvaModo, ipvaA = num('ipva'), ipvaFixo = num('ipvaFixo');
   const segModo= state.seguroModo, seguroPct = num('seguroPct'), seguroFixo = num('seguroFixo');
 
   // entrada efetiva (reais ou %)
@@ -665,7 +745,7 @@ function build(){
     }
     for(let m=0;m<T;m+=12){
       const v=valorCarro(m);
-      if(flags.ipva) add(a,'IPVA',m,ipvaA/100*v);
+      if(flags.ipva){ const ip = ipvaModo==='pct' ? ipvaA/100*v : ipvaFixo; add(a,'IPVA',m,ip); }
       if(flags.seguro){ const s=segModo==='pct' ? seguroPct/100*v : seguroFixo; add(a,'Seguro',m,s); }
     }
   }
@@ -708,16 +788,26 @@ function build(){
     manut:!state.inclui.manut, pneus:!state.inclui.pneus,
     ipva:!state.inclui.ipva,   seguro:!state.inclui.seguro
   });
-  // Rendimento do capital preservado: ao optar pelo aluguel, o comprador
-  // mantém "preco" aplicado e recebe W% líquido/mês. Essa receita reduz o
-  // custo efetivo do aluguel. Só se aplica quando o dinheiro existe (temDinheiro=sim).
-  const temCapital = state.temDinheiro === 'sim';
-  const rendMensal = preco * W / 100;   // rendimento líquido mensal sobre o capital preservado
+  // Rendimento do capital preservado: ao optar pelo aluguel, a pessoa mantém
+  // aplicado o capital que, do contrário, imobilizaria na compra/financiamento —
+  // e recebe W% líquido/mês. Essa receita reduz o custo efetivo do aluguel.
+  // O valor preservado depende da situação:
+  //  - tem o valor à vista        -> preserva o PREÇO CHEIO do carro
+  //  - não tem à vista, tem entrada -> preserva apenas o valor da ENTRADA
+  //  - não tem nada               -> não há capital preservado (rendimento zero)
+  let capitalPreservado = 0;
+  if(state.temDinheiro === 'sim'){
+    capitalPreservado = preco - entrada;   // tem o valor todo, mas usou a entrada no financiamento
+  } else if(state.temEntrada === 'sim'){
+    capitalPreservado = entrada;
+  }
+  const temCapital = capitalPreservado > 0;
+  const rendMensal = capitalPreservado * W / 100;   // rendimento líquido mensal
   if(temCapital && rendMensal > 0){
     for(let t=1;t<=T;t++) add(al,'Rendimento do capital',t,-rendMensal);
   }
 
-  return {T,kmMes,W,preco,prazo,rendMensal,temCapital,
+  return {T,kmMes,W,preco,prazo,rendMensal,temCapital,capitalPreservado,
     av,fi,al,
     fin:{PMT,iof,iofRate,montante,jurosNom,principal,entrada,saldoQuit,pagos}
   };
@@ -769,38 +859,70 @@ function render(){
     {key:'fi',...SC.fi, vp:r.fi.vp, nom:r.fi.nom, kmc:r.fi.vp/km, obj:r.fi},
     {key:'al',...SC.al, vp:r.al.vp, nom:r.al.nom, kmc:r.al.vp/km, obj:r.al},
   ];
-  const sorted = [...items].sort((a,b)=>a.vp-b.vp);
+
+  // Viabilidade por cenário
+  const semVista   = state.temDinheiro === 'nao';
+  const semEntrada = state.temEntrada  === 'nao';
+  const inviavel = {
+    av: semVista,
+    fi: semVista && semEntrada,
+    al: false
+  };
+  items.forEach(it=> it.inviavel = inviavel[it.key]);
+  r.inviavel = inviavel;
+
+  // Só cenários viáveis concorrem a "mais barata"
+  const viaveis = items.filter(it=>!it.inviavel);
+  const sorted = [...viaveis].sort((a,b)=>a.vp-b.vp);
   const winner = sorted[0], second = sorted[1];
-  const noCash = state.temDinheiro==='nao';
+  const noCash = semVista;
 
   // verdict
   $('winName').textContent = winner.label;
-  const econ = second.vp - winner.vp;
-  $('winSub').innerHTML = `Custo VP <b>${brl(winner.vp)}</b> — economia de <b>${brl(econ)}</b> sobre ${second.label.toLowerCase()} (${brl(second.vp)}).`;
+  if(second){
+    const econ = second.vp - winner.vp;
+    $('winSub').innerHTML = `Custo VP <b>${brl(winner.vp)}</b> — economia de <b>${brl(econ)}</b> sobre ${second.label.toLowerCase()} (${brl(second.vp)}).`;
+  } else {
+    $('winSub').innerHTML = `Custo VP <b>${brl(winner.vp)}</b> — única alternativa viável na sua situação.`;
+  }
   document.querySelector('.verdict .pill').style.background = winner.color;
 
   // cards
   $('cards').innerHTML = items.map(it=>{
-    const win  = it.key===winner.key;
-    const warn = noCash && it.key==='av';
-    return `<div class="sc ${it.cls}${warn?' warn':''}">
+    const win  = !it.inviavel && winner && it.key===winner.key;
+    if(it.inviavel){
+      return `<div class="sc ${it.cls} warn">
+        <span class="badge" style="background:var(--muted)">INVIÁVEL</span>
+        <p class="tag">${it.label}</p>
+        <p class="vp" style="color:var(--muted2)">—</p>
+        <p class="vplabel">indisponível na sua situação</p>
+        <p class="flag">${it.key==='av' ? 'Você não tem o valor à vista.' : 'Você não tem a entrada mínima.'}</p>
+      </div>`;
+    }
+    return `<div class="sc ${it.cls}">
       ${win?'<span class="badge">MAIS BARATA</span>':''}
       <p class="tag">${it.label}</p>
       <p class="vp">${brl(it.vp)}</p>
       <p class="vplabel">custo a valor presente</p>
       <div class="meta"><span>nominal</span><b>${brl(it.nom)}</b></div>
       <div class="meta" style="border-top:none;padding-top:4px"><span>por km</span><b>${brl2(it.kmc)}</b></div>
-      ${warn?'<p class="flag">Sem o valor à vista hoje — referência apenas.</p>':''}
     </div>`;
   }).join('');
 
-  // bars
-  const maxVp = Math.max(...items.map(i=>i.vp),1);
-  $('bars').innerHTML = items.map(it=>`
-    <div class="bar ${it.cls}">
+  // bars (só cenários viáveis)
+  const maxVp = Math.max(...viaveis.map(i=>i.vp),1);
+  $('bars').innerHTML = items.map(it=>{
+    if(it.inviavel){
+      return `<div class="bar ${it.cls}">
+        <div class="top"><span class="nm" style="color:var(--muted2)">${it.label}</span><span class="vl" style="color:var(--muted2)">inviável</span></div>
+        <div class="track"></div>
+      </div>`;
+    }
+    return `<div class="bar ${it.cls}">
       <div class="top"><span class="nm">${it.label}</span><span class="vl">${brl(it.vp)}</span></div>
       <div class="track"><div class="fill" style="width:${Math.max(2,it.vp/maxVp*100).toFixed(1)}%"></div></div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 
   // ledger
   const cats = ['Compra à vista','Entrada','Parcelas','Quitação do saldo','Entrada / caução',
@@ -849,11 +971,12 @@ function render(){
 
 function drawLine(r){
   const T=r.T, x0=8, y0=8;
+  const inv = r.inviavel || {av:false,fi:false,al:false};
   const series=[
-    {c:'var(--avista)',  m:r.av.monthly},
-    {c:'var(--financiado)',m:r.fi.monthly},
-    {c:'var(--aluguel)', m:r.al.monthly},
-  ];
+    {key:'av', c:'var(--avista)',    m:r.av.monthly},
+    {key:'fi', c:'var(--financiado)',m:r.fi.monthly},
+    {key:'al', c:'var(--aluguel)',   m:r.al.monthly},
+  ].filter(s=>!inv[s.key]);   // só cenários viáveis entram no gráfico
   const cum=s=>{let a=0;return s.map(v=>a+=v);};
   const curves=series.map(s=>({c:s.c,d:cum(s.m)}));
   let maxY=0; curves.forEach(c=>c.d.forEach(v=>{if(v>maxY)maxY=v;}));
@@ -874,6 +997,12 @@ function drawLine(r){
   for(let yv=0;yv<=years;yv++){const t=Math.min(yv*12,T),x=px(t);
     g+=`<text x="${x}" y="234" font-size="9" fill="var(--muted2)" text-anchor="middle" font-family="var(--mono)">${yv}a</text>`;}
   svg.innerHTML=g;
+  // esmaecer legendas de cenários inviáveis
+  ['av','fi','al'].forEach(k=>{
+    const el=$('leg-'+k);
+    if(el){ el.style.opacity = inv[k] ? '.32' : '1';
+      el.style.textDecoration = inv[k] ? 'line-through' : 'none'; }
+  });
 }
 
 // ===================== CASH FLOW TAB =====================
@@ -977,7 +1106,7 @@ function renderCfTab(r){
   const notes = {
     av:`Compra paga no mês 0 (sem desconto). Custos de posse pagos nos meses em que ocorrem. Revenda no mês ${r.T} (sinal negativo = entrada de caixa).`,
     fi:`Entrada no mês 0. Parcelas nos meses 1–${r.fin.pagos}${r.fin.saldoQuit>0?` e quitação de saldo no mês ${r.T} (horizonte < prazo)`:(r.prazo<r.T?`; após o mês ${r.prazo} as parcelas cessam e seguem só os custos de posse`:'')}.`,
-    al:`Mensalidades pagas mês a mês. Sem revenda ao final.${r.temCapital?' O rendimento do capital ('+brl2(r.rendMensal)+'/mês sobre '+brl(r.preco)+' preservado) é lançado como crédito redutor — representa o ganho financeiro de NÃO imobilizar o capital na compra.':' (Rendimento do capital não aplicado: você não dispõe do valor à vista.)'}`
+    al:`Mensalidades pagas mês a mês. Sem revenda ao final.${r.temCapital?' O rendimento do capital ('+brl2(r.rendMensal)+'/mês sobre '+brl(r.capitalPreservado)+' preservado — '+(state.temDinheiro==='sim'?'o valor que você tem menos a entrada usada no financiamento':'o valor da entrada que você não usa no financiamento')+') é lançado como crédito redutor.':' (Rendimento do capital não aplicado: você não dispõe de valor à vista nem de entrada.)'}`
   };
   $('cfNote').textContent = notes[s];
 }
@@ -993,8 +1122,21 @@ function segWire(id, key, extra){
     b.classList.add('on'); state[key]=b.dataset.v; if(extra)extra(b.dataset.v); render();
   }));
 }
-segWire('temDinheiro','temDinheiro');
-segWire('temJuros','temJuros', v=>{ $('jurosWrap').classList.toggle('hidden',v==='sem'); });
+segWire('temDinheiro','temDinheiro', v=>{
+  $('temEntradaWrap').classList.toggle('hidden', v!=='nao');
+  applyAvailability();
+});
+segWire('temEntrada','temEntrada', v=>{ applyAvailability(); });
+segWire('temJuros','temJuros', v=>{
+  const semJuros = v==='sem';
+  $('jurosWrap').classList.toggle('hidden', semJuros);
+  const prow = $('jurosWrap').closest('.pair-row');
+  if(prow) prow.classList.toggle('solo', semJuros);
+});
+segWire('ipvaModo','ipvaModo', v=>{
+  $('ipvaPctWrap').classList.toggle('hidden',v!=='pct');
+  $('ipvaFixWrap').classList.toggle('hidden',v!=='fixo');
+});
 segWire('seguroModo','seguroModo', v=>{
   $('segPctWrap').classList.toggle('hidden',v!=='pct');
   $('segFixWrap').classList.toggle('hidden',v!=='fixo');
@@ -1028,7 +1170,48 @@ $('cfScenarioTabs').querySelectorAll('button').forEach(btn=>{
   });
 });
 
+// ===================== DISPONIBILIDADE / BLOQUEIO =====================
+// Regras:
+//  - Tem à vista            -> tudo liberado
+//  - Não tem à vista, tem entrada  -> compra à vista inviável (painel 3 travado); financiado e aluguel ativos
+//  - Não tem à vista nem entrada   -> só aluguel (painéis 1,3,4 travados) + popup
+function applyAvailability(){
+  const semVista   = state.temDinheiro === 'nao';
+  const semEntrada = state.temEntrada  === 'nao';
+  const soAluguel  = semVista && semEntrada;
+
+  const p1=$('panel1'), p3=$('panel3'), p4=$('panel4'), p5=$('panel5');
+  // limpar
+  [p1,p3,p4,p5].forEach(p=>p && p.classList.remove('locked'));
+
+  if(soAluguel){
+    // trava tudo menos o aluguel (painel 5) e o painel 2 (onde ficam as chaves para reverter)
+    [p1,p3,p4].forEach(p=>p && p.classList.add('locked'));
+    showOnlyRentModal();
+  } else if(semVista){
+    // apenas a compra à vista fica inviável. O painel 3 alimenta também o financiado,
+    // então permanece ativo; a inviabilidade do à vista é sinalizada no resultado.
+    hideOnlyRentModal();
+  } else {
+    hideOnlyRentModal();
+  }
+  render();
+}
+
+function showOnlyRentModal(){ $('modalOnlyRent').classList.add('show'); }
+function hideOnlyRentModal(){ $('modalOnlyRent').classList.remove('show'); }
+
+$('modalCloseBtn').addEventListener('click', hideOnlyRentModal);
+$('modalOkBtn').addEventListener('click', ()=>{
+  hideOnlyRentModal();
+  // rola até o painel de aluguel
+  const p5=$('panel5'); if(p5) p5.scrollIntoView({behavior:'smooth', block:'center'});
+});
+$('modalOnlyRent').addEventListener('click', e=>{ if(e.target===$('modalOnlyRent')) hideOnlyRentModal(); });
+
 render();
+applyAvailability();
+
 </script>
 </body>
 </html>
